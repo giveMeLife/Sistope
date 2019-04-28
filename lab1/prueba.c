@@ -86,19 +86,21 @@ int main(int argc, char *argv[]) {
     if(pid == 0){
         printf("hola\n");
         dup2(pipefd[1],STDOUT_FILENO);
-        printf("nose\n");
+        /*printf("nose\n");
         dup2(pipefd2[0],STDIN_FILENO);
         printf("chao\n");
         close(pipefd[0]);
-        close(pipefd2[1]);
+        close(pipefd2[1]);*/
+        dup2(pipefd2[0],STDIN_FILENO);
+
         //printf("hola\n");STDOUT_FILENO
-        printf("hola\n");
+        //printf("hola\n");
         execv("./a",NULL);        
     }
-    wait(&pid);
     char buffer[100];
-    write(pipefd[1], "Hola hijo\n", 11);
-    read(pipefd2[1], buffer, 100);
+    write(pipefd2[1], "Hola hijo\n", 11);
+    wait(NULL);
+    read(pipefd[0], buffer, 100);
     printf("Padre: %s\n", buffer);
     
 

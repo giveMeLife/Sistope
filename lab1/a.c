@@ -8,12 +8,9 @@
 
 
 int main(){
-    printf("jaja\n");
     char buffer[100];
-    printf("hola del hijo");
     read(STDIN_FILENO, buffer, 100);
-    printf("Hijo: %s", buffer);
-    write(STDOUT_FILENO, "TE ENVIO ESTE MENSAJE CUALQUIERA\n", 34);
+    printf("%s",buffer);
     exit(1);
     return 0;
 }
