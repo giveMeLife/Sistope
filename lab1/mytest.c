@@ -5,7 +5,15 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <math.h>
+/*
+Ahora solo falta hacer que los hijos devuelvan los datos específicos
+Lo que se puede hacer, es que se devuelva un array con los datos de la visibilidad
+y con el pid del hijo que lo manda.
+Así que solo hay que escribir desde los hijos al padre y era
+TE QUIERO MUCHO!! <3 <3 3<
 
+
+*/
 
 #define LECTURA 0
 #define ESCRITURA 1
