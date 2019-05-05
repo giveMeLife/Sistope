@@ -26,6 +26,7 @@ int discos = 5;
 int ancho = 2;
 int**pipesIn;
 int**pipesOut;
+pid_t *childPids;
 float raiz(float a, float b){
 	return sqrt(a*a + b*b);
 }
@@ -53,18 +54,27 @@ void end(float* a){
 void readFile(char* name){
     //Se crean tantos hijos como discos
     for(int i = 0; i<discos+1; i++){
-        pid_t child = fork();
-        if(getpid() != parent){
-            dup2(pipesOut[i][ESCRITURA],STDOUT_FILENO);
-            dup2(pipesIn[i][LECTURA],STDIN_FILENO);
-            close(pipesOut[i][LECTURA]);
-            close(pipesIn[i][ESCRITURA]);    
-            execv("./son",NULL);
+        childPids[i] = fork();
+       
+        if(childPids[i] == 0){
+            dup2(pipesOut[i][1],STDOUT_FILENO);
+            dup2(pipesIn[i][0],STDIN_FILENO);
+            close(pipesOut[i][0]);
+            close(pipesIn[i][1]);    
+            execl("./son","./son",(char *)NULL);
             
         }
+        printf("%d\n",childPids[i]);
+        
         // close(pipesOut[i][ESCRITURA]);
         // close(pipesIn[i][LECTURA]); 
     }
+     for(int j = 0; j<discos+1; j++){
+         close(pipesOut[j][ESCRITURA]);
+         close(pipesIn[j][LECTURA]);
+        
+
+     }
     
     FILE * archivo;
 	char cadena[500];
@@ -98,7 +108,7 @@ void readFile(char* name){
     //leyendo el mismo dato o no.
 	while (fgets(cadena,500,archivo)!=NULL){ 
 		sscanf(cadena,"%f,%f,%f,%f,%f",&v,&u,&w,&i,&r);
-	//	printf("%f-%f-%f-%f-%f\n",v,u,w,i,r);
+		//printf("%f-%f-%f-%f-%f\n",v,u,w,i,r);
         data[0] = v;
         data[1] = u;
         data[2] = w;
@@ -108,27 +118,32 @@ void readFile(char* name){
         global = global + 1.0;
         int disc = disco(v,u);
         //printf("Soy el disco: %d\n", disc);
-        write(pipesIn[disc][ESCRITURA],&data,sizeof(data));
+         write(pipesIn[disc][ESCRITURA],&data,sizeof(data));
 	}
-    //se envía la señal de término a todos los hijos
+
+    
     end(data);
-    for(int j = 0; j<discos+1; j++){
-        
-        write(pipesIn[j][ESCRITURA],&data,sizeof(float)*6);
+    for(int j=0;j<discos+1;j++){
+       write(pipesIn[j][1],&data,sizeof(data));
     }
-    wait(NULL);
-    for(int j = 0; j<discos+1;j++){
-        close(pipesIn[j][ESCRITURA]);
-        close(pipesIn[j][LECTURA]);
-        close(pipesOut[j][ESCRITURA]);
+    for(int j=0;j<discos+1;j++){
+        close(pipesIn[j][1]);
     }
+    int status;
+    
+    // for(int j = 0; j<discos+1; j++){
+    //     //printf("%d\n",j);
+    //     close(pipesIn[j][ESCRITURA]);
+    // }
     //se espera el término de los hijos
-      
+    
     int o;
 
+    
     for(int j = 0; j<discos+1;j++){
-        read(pipesOut[j][0],&o,sizeof(int));
+        read(pipesOut[j][0],&o,sizeof(o));
         printf("Mi hijo me mandó: %d\n",o);
+        close(pipesOut[j][LECTURA]);
     }
 	fclose(archivo);
 }
@@ -187,22 +202,20 @@ int main(int argc, char *argv[]) {
     strcpy(nombreSalida,argv[4]);
     discos = atoi(argv[6]);
     ancho = atoi(argv[8]);
-
-
+    childPids = malloc(sizeof(pid_t)*discos);
+    printf("Discos: %d\n", discos);
     parent = getpid();
     //se inicializan los pipes
-    pipesIn = (int**)malloc(sizeof(int)*(discos+1));
-    pipesOut = (int**)malloc(sizeof(int)*(discos+1));
+    pipesIn = (int**)malloc(sizeof(int*)*(discos+1));
+    pipesOut = (int**)malloc(sizeof(int*)*(discos+1));
     //pipes para que los hijos lean
     for(int i = 0; i<discos+1; i++){
         pipesIn[i] = (int*)malloc(sizeof(int)*2);
-        pipe(pipesIn[i]); 
-    }
-    //pipes para que los hijos escriban
-    for(int i = 0; i<discos+1; i++){
         pipesOut[i] = (int*)malloc(sizeof(int)*2);
+        pipe(pipesIn[i]); 
         pipe(pipesOut[i]);
     }
+    
     
     readFile(nombreEntrada);
     

@@ -1,7 +1,12 @@
+#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <math.h>
+#include <ctype.h>
+
 
 
 #define LECTURA 0
@@ -108,23 +113,24 @@ int verify(float* a){
 }
 
 int main(){
-    Lista * lista = malloc(sizeof(Lista));
-    inicializar(lista);
-    float a[6];
-    float actual = -1.0;
-    float n;
-    int i=0;
+     Lista * lista = malloc(sizeof(Lista));
+     inicializar(lista);
+     float a[6];
+     float actual = -1.0;
+     float n;
+     
     char b[100];
-    //algo sucede porque el programa se queda pegado
-    //si se saca el read, todo funciona bien
-    //así que el problema lo está dando el read.
 
-    while(read(STDIN_FILENO,a,sizeof(a))>0 && verify(a)!=1){ 
-            lista = agregarNodo(lista, a[0],a[1],a[2],a[3],a[4]);         
-    }
-    int l = largo(lista);
-	write(STDOUT_FILENO,&l,sizeof(int));
-	close(STDIN_FILENO);
-	close(STDOUT_FILENO);
+
+     while(read(STDIN_FILENO,a,sizeof(a))>-1 && verify(a)!=1){ 
+               lista = agregarNodo(lista, a[0],a[1],a[2],a[3],a[4]);         
+     }
+     int l = largo(lista);
+	__pid_t i = getpid();
+	write(STDOUT_FILENO,&l,sizeof(l));
+	
+	//  close(STDIN_FILENO);
+	//  close(STDOUT_FILENO);
+	
     return 0;
 }

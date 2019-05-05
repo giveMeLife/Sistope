@@ -1,13 +1,20 @@
+#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <math.h>
+#include <ctype.h>
 
 int main(){
-    float* a = malloc(sizeof(float)*3);
-    a = NULL;
-    if(a == NULL){
-        printf("hola\n");
+    char buffer[100];
+    read(STDIN_FILENO, buffer, 100);
+    if(read(STDIN_FILENO, buffer, 100)==EOF){
+        write(STDOUT_FILENO,"jaja\n",6);
     }
-    a = malloc(sizeof(float)*3);
-    printf("%f\n", a[1]);
+    else{
+        write(STDOUT_FILENO, "chao\n",6);
+    }
     return 0;
 }
