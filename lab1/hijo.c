@@ -85,6 +85,16 @@ float propiedades(Lista* lista, int tipo, int N){
 
 
 
+int largo(Lista* lista){
+	int i = 0;
+    Nodo * actual = lista->inicio;
+    while(actual!=NULL){
+		actual = actual->sig;
+        i++;
+    }
+    return i;
+}
+
 int main(int argc, char const *argv[])
 {
 
@@ -96,7 +106,7 @@ int main(int argc, char const *argv[])
 	lista = agregarNodo(lista,-180.271179,-43.749226,-0.011654,0.001075,0.003039);
 	lista = agregarNodo(lista,-30.299767,-126.668739,0.015222,-0.004145,0.007097);
 	lista = agregarNodo(lista,-18.289482,28.76403,0.025931,0.001565,0.004362);
-
+	printf("Largo: %d\n",largo(lista));
 
 
 	return 0;

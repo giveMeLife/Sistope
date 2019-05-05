@@ -108,26 +108,23 @@ int verify(float* a){
 }
 
 int main(){
-    Lista * lista;
+    Lista * lista = malloc(sizeof(Lista));
     inicializar(lista);
-    float *a = malloc(sizeof(float)*6);
+    float a[6];
     float actual = -1.0;
     float n;
-    int i;
+    int i=0;
+    char b[100];
     //algo sucede porque el programa se queda pegado
     //si se saca el read, todo funciona bien
     //así que el problema lo está dando el read.
-    while(read(STDIN_FILENO,a,sizeof(a)) && verify(a)!=1){
-        // if(actual != a[5]){
-        //     // lista = agregarNodo(lista, a[0],a[1],a[2],a[3],a[4]); 
-        //     i++;
-        //     n = a[1];
-        //     actual = a[5] + 0.0; 
-        // } 
+
+    while(read(STDIN_FILENO,a,sizeof(a))>0 && verify(a)!=1){ 
+            lista = agregarNodo(lista, a[0],a[1],a[2],a[3],a[4]);         
     }
-    //float mediaReal = propiedades(lista, 0, largo(lista));
-    freopen ("/dev/tty", "a", stdout);
-    printf("termine\n");
-    printf("me gusta la tula\n");
+    int l = largo(lista);
+	write(STDOUT_FILENO,&l,sizeof(int));
+	close(STDIN_FILENO);
+	close(STDOUT_FILENO);
     return 0;
 }

@@ -98,9 +98,9 @@ int main(int argc, char *argv[]) {
         execv("./a",NULL);        
     }
     char buffer[100];
-    write(pipefd2[1], "Hola hijo\n", 11);
+    write(pipefd2[0], "Hola hijo\n", 11);
     wait(NULL);
-    read(pipefd[0], buffer, 100);
+    read(pipefd[1], buffer, 100);
     printf("Padre: %s\n", buffer);
     
 

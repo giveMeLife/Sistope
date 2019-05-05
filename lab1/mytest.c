@@ -47,9 +47,15 @@ void readFile(char* name){
         if(getpid() != parent){
             dup2(pipesOut[i][ESCRITURA],STDOUT_FILENO);
             dup2(pipesIn[i][LECTURA],STDIN_FILENO);
+            close(pipesOut[i][LECTURA]);
+            close(pipesIn[i][ESCRITURA]);    
             execv("./son",NULL);
+            
         }
+        // close(pipesOut[i][ESCRITURA]);
+        // close(pipesIn[i][LECTURA]); 
     }
+    
     FILE * archivo;
 	char cadena[500];
 	char archivo1[32];
@@ -78,7 +84,7 @@ void readFile(char* name){
 		}
 	}
 
-    float *data = (float*)malloc(sizeof(float)*6);
+    float data[6];
     //GLOBAL es utilizado para que el hijo sepa si sigue
     //leyendo el mismo dato o no.
 	while (fgets(cadena,500,archivo)!=NULL){ 
@@ -92,17 +98,48 @@ void readFile(char* name){
         data[5] = global + 0.0;
         global = global + 1.0;
         int disc = disco(v,u);
-        printf("Soy el disco: %d\n", disc);
-        write(pipesIn[disc][ESCRITURA],&data,sizeof(float)*6);
+        //printf("Soy el disco: %d\n", disc);
+        write(pipesIn[disc][ESCRITURA],&data,sizeof(data));
 	}
     //se envía la señal de término a todos los hijos
     end(data);
-    for(int i = 0; i<discos; i++){
-        write(pipesIn[i][ESCRITURA],&data,sizeof(float)*6);
+    for(int j = 0; j<discos+1; j++){
+        
+        write(pipesIn[j][ESCRITURA],&data,sizeof(float)*6);
+    }
+    wait(NULL);
+    for(int j = 0; j<discos+1;j++){
+        close(pipesIn[j][ESCRITURA]);
+        close(pipesIn[j][LECTURA]);
+        close(pipesOut[j][ESCRITURA]);
     }
     //se espera el término de los hijos
-    wait(NULL);
+      
+    int o;
+
+    for(int j = 0; j<discos+1;j++){
+        read(pipesOut[j][0],&o,sizeof(int));
+        printf("Mi hijo me mandó: %d\n",o);
+    }
 	fclose(archivo);
+    
+    
+    // int pipeOut[2];
+    // int pipeIn[2];
+    // pipe(pipeIn); pipe(pipeOut);
+    // pid_t l = fork();
+    // if(l==0){
+    //     printf("entre\n");
+    //     dup2(pipeOut[1],STDOUT_FILENO);
+    //     dup2(pipeIn[0],STDIN_FILENO);    
+    //     execv("./son",NULL);
+    // }
+    // printf("hola\n");
+    // write(pipeIn[1],"holabebe\n",10);
+    // wait(NULL);
+    // read(pipeOut[0],buffer,5);
+    // printf("Hijo: %s\n",buffer);
+    // printf("chao\n");
 }
 
 
@@ -128,6 +165,24 @@ int main(int argc, char *argv[]) {
     //                       {-30.299767,-126.668739,0.015222,-0.004145,0.007097,4.0}};
 
     readFile("hooa");
+    // int pipeOut[2];
+    // int pipeIn[2];
+    // pipe(pipeIn); pipe(pipeOut);
+    // pid_t l = fork();
+    // if(l==0){
+    //     printf("entre\n");
+    //     dup2(pipeOut[1],STDOUT_FILENO);
+    //     dup2(pipeIn[0],STDIN_FILENO);    
+    //     execv("./son",NULL);
+    // }
+    // printf("hola\n");
+    // write(pipeIn[1],"holabebe\n",10);
+    // wait(NULL);
+    // read(pipeOut[0],buffer,5);
+    // printf("Hijo: %s\n",buffer);
+    // printf("chao\n");
+    
+    
     return 0;
     
 }
