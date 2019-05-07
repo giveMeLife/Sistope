@@ -23,6 +23,22 @@ pid_t *childPids;
 double **prop;
 
 
+//Se escribe el archivo de salida según el nombre ingresado por el usuario, la lista con las propiedades
+// y el archivo de salida.
+void writeFile(char * nombreArchivo,double ** propiedades, int discos){
+	FILE *archivoSalida=fopen(nombreArchivo,"w");
+	int i = 1;
+	while(i <= discos){
+		fprintf(archivoSalida, "Disco %i:\n",i);
+		fprintf(archivoSalida, "Media real: %f\n",propiedades[i][0]);
+		fprintf(archivoSalida, "Media imaginaria: %f\n",propiedades[i][1]);
+		fprintf(archivoSalida, "Potencia: %f\n",propiedades[i][2]);
+		fprintf(archivoSalida, "Ruido total: %f\n",propiedades[i][3]);
+		i++;
+	}	
+	fclose(archivoSalida);
+}
+
 void inicializadPipes(){
 	//se inicializan los pipes
     pipesIn = (int**)malloc(sizeof(int*)*(discos+1));
@@ -62,7 +78,7 @@ void end(double* a){
 //función que lee el archivo de texto y se encarga de 
 //mandar los datos a los hijos y recibir las respuestas
 //de estos.
-void readFile(char* name){
+void readFile(char* name, char * nombreSalida){
 	FILE * archivo;
 	archivo=fopen(name,"r");
 	if(archivo == NULL){
@@ -142,11 +158,16 @@ void readFile(char* name){
 	// }
 
 	fclose(archivo);
+	writeFile(nombreSalida,prop,discos);
 }
 
-void writeFile(){
-	//Do something
-}
+
+
+
+
+
+
+
 
 
 int main(int argc, char *argv[]) {
@@ -155,7 +176,7 @@ int main(int argc, char *argv[]) {
   int oflag = 0;
   int nflag = 0;
   int dflag = 0;
-  char *bvalue = NULL;
+  int bvalue = 0;
   int index;
   int c;
   char * nombreSalida = malloc(sizeof(char)*30);
@@ -179,7 +200,7 @@ int main(int argc, char *argv[]) {
         dflag = 1;
         break;
       case 'b':
-        bvalue = optarg;
+        bvalue = 1;
         break;
       case '?':
         if (optopt == 'c')
@@ -194,8 +215,6 @@ int main(int argc, char *argv[]) {
       default:
         abort ();
       }
-    printf ("iflag = %d, oflag = %d, nflag = %d, dflag = %d,bvalue = %s\n",
-              iflag, oflag, nflag, dflag,bvalue);
    
     //Se asignan los valores de entrada a las variables
     strcpy(nombreEntrada,argv[2]);
@@ -208,7 +227,7 @@ int main(int argc, char *argv[]) {
 
     inicializadPipes();
     
-    readFile(nombreEntrada);
+    readFile(nombreEntrada,nombreSalida);
     
     
     return 0;
