@@ -1,6 +1,6 @@
-all: lab1
+all: lab1 Vis
 
-lab1: mytest.c 
-	gcc -o lab1 mytest.c -lm
-son: sontest.c
-	gcc -o son sontest.c -lm
+lab1: lab1.c 
+	gcc -o lab1 lab1.c -lm
+Vis: Vis.c
+	gcc -o Vis Vis.c -lm

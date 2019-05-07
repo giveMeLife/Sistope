@@ -116,27 +116,35 @@ int verify(double* a){
 }
 
 int main(){
+	//Se inicializa lista para guardar los datos
     Lista * lista = malloc(sizeof(Lista));
     inicializar(lista);
+
+	//arreglo para la lectura desde el proceso padre
     double a[5];
+	//arreglo para las propiedades
     double *prop = malloc(sizeof(double)*5);
+	
+	//Visibilidades;
 	prop[4] = 0.0;
-    while(read(STDIN_FILENO,a,sizeof(a))>-1 && verify(a)!=1){ 
+    
+	//Lectura del PIPE 
+	while(read(STDIN_FILENO,a,sizeof(a))>-1 && verify(a)!=1){ 
         lista = agregarNodo(lista, a[0],a[1],a[2],a[3],a[4]);         
 		prop[4] = prop[4] + 1.0;
 	}
+
     int l = largo(lista);
 	prop[0] = propiedades(lista,0,l);
 	prop[1] = propiedades(lista,1,l);
 	prop[2] = propiedades(lista,2,l);
 	prop[3] = propiedades(lista,3,l); 
-	// for(int i = 0; i<5; i++){
-	// 	write(STDOUT_FILENO,&prop[i],sizeof(double));
-	// }
+
+	//Envío de mensaje con datos al padre
 	write(STDOUT_FILENO, prop, sizeof(double)*5);
 	
-	freopen ("/dev/tty", "a", stdout);
-	if(l>0)
-		printf("Data:%lf\n",prop[2]);
-    return 0;
+	// freopen ("/dev/tty", "a", stdout);
+	// if(l>0)
+	// 	printf("Data:%lf\n",prop[2]);
+    // return 0;
 }
