@@ -138,12 +138,13 @@ int main(){
 	prop[0] = propiedades(lista,0,l);
 	prop[1] = propiedades(lista,1,l);
 	prop[2] = propiedades(lista,2,l);
-	prop[3] = propiedades(lista,3,l); 
+	prop[3] = propiedades(lista,3,l);
 
 	//Envío de mensaje con datos al padre
 	write(STDOUT_FILENO, prop, sizeof(double)*5);
 	
-	// freopen ("/dev/tty", "a", stdout);
+	freopen ("/dev/tty", "a", stdout);
+	//if(a[5] == 1.0) printf("Soy el hijo de pid %i y procesé %f visibilidades \n",getpid(), prop[4] );
 	// if(l>0)
 	// 	printf("Data:%lf\n",prop[2]);
     // return 0;

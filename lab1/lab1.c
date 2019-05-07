@@ -25,7 +25,7 @@ double **prop;
 
 //Se escribe el archivo de salida según el nombre ingresado por el usuario, la lista con las propiedades
 // y el archivo de salida.
-void writeFile(char * nombreArchivo,double ** propiedades, int discos){
+void writeFile(char * nombreArchivo,double ** propiedades, int discos, int b){
 	FILE *archivoSalida=fopen(nombreArchivo,"w");
 	int i = 1;
 	while(i <= discos){
@@ -34,6 +34,9 @@ void writeFile(char * nombreArchivo,double ** propiedades, int discos){
 		fprintf(archivoSalida, "Media imaginaria: %f\n",propiedades[i][1]);
 		fprintf(archivoSalida, "Potencia: %f\n",propiedades[i][2]);
 		fprintf(archivoSalida, "Ruido total: %f\n",propiedades[i][3]);
+		if(b == 1){
+			printf("Soy el hijo de Pid %i y procesé %f\n",childPids[i],propiedades[i][4] );
+		}
 		i++;
 	}	
 	fclose(archivoSalida);
@@ -78,7 +81,7 @@ void end(double* a){
 //función que lee el archivo de texto y se encarga de 
 //mandar los datos a los hijos y recibir las respuestas
 //de estos.
-void readFile(char* name, char * nombreSalida){
+void readFile(char* name, char * nombreSalida, int b){
 	FILE * archivo;
 	archivo=fopen(name,"r");
 	if(archivo == NULL){
@@ -158,7 +161,7 @@ void readFile(char* name, char * nombreSalida){
 	// }
 
 	fclose(archivo);
-	writeFile(nombreSalida,prop,discos);
+	writeFile(nombreSalida,prop,discos,b);
 }
 
 
@@ -227,7 +230,7 @@ int main(int argc, char *argv[]) {
 
     inicializadPipes();
     
-    readFile(nombreEntrada,nombreSalida);
+    readFile(nombreEntrada,nombreSalida,bvalue);
     
     
     return 0;
