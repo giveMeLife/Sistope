@@ -19,7 +19,7 @@ TE QUIERO MUCHO!! <3 <3 3<
 
 #define LECTURA 0
 #define ESCRITURA 1
-float global = 0.0;
+double global = 0.0;
 pid_t parent;
 char buffer[100];
 int discos = 5;
@@ -27,15 +27,17 @@ int ancho = 2;
 int**pipesIn;
 int**pipesOut;
 pid_t *childPids;
-float raiz(float a, float b){
+double **prop;
+
+double raiz(double a, double b){
 	return sqrt(a*a + b*b);
 }
 
 //Función que indica en qué disco se encuentra la visibilidad
-int disco(float a, float b){
-    float punto = raiz(a,b);
-    float disc = punto/(float)ancho;
-    if(disc>=(float)(discos*ancho)){
+int disco(double a, double b){
+    double punto = raiz(a,b);
+    double disc = punto/(double)ancho;
+    if(disc>=(double)(discos*ancho)){
         return discos;
     }
     return (int)disc;
@@ -44,8 +46,8 @@ int disco(float a, float b){
 
 //Función que se utiliza para asignar todos los valores
 //de un arreglo como -1
-void end(float* a){
-    for(int i = 0; i<6; i++){
+void end(double* a){
+    for(int i = 0; i<5; i++){
         a[i] = -1.0;
     }
 }
@@ -80,12 +82,12 @@ void readFile(char* name){
 	char cadena[500];
 	char archivo1[32];
 	int opcion;
-	float v;
-	float u;
-	float w;
-	float i;
-	float r;
-
+	double v;
+	double u;
+	double r;
+	double i;
+	double ruido;
+  double pot = 0.0;
 	archivo=fopen(name,"r");
 	while(archivo==NULL){ // Si el archivo no abre, el programa termina
 		printf("Fallo la apertura del archivo ¿Qué desea hacer a continuación?\n1)Volver a ingresar nombre\n2)Terminar el programa\n");
@@ -103,49 +105,57 @@ void readFile(char* name){
 			
 		}
 	}
-    float data[6];
+    double data[5];
     //GLOBAL es utilizado para que el hijo sepa si sigue
     //leyendo el mismo dato o no.
+  double sum = 0.0;
 	while (fgets(cadena,500,archivo)!=NULL){ 
-		sscanf(cadena,"%f,%f,%f,%f,%f",&v,&u,&w,&i,&r);
+		sscanf(cadena,"%lf,%lf,%lf,%lf,%lf",&u,&v,&r,&i,&ruido);
 		//printf("%f-%f-%f-%f-%f\n",v,u,w,i,r);
-        data[0] = v;
-        data[1] = u;
-        data[2] = w;
+        data[0] = u;
+        data[1] = v;
+        data[2] = r;
         data[3] = i;
-        data[4] = r;
-        data[5] = global + 0.0;
-        global = global + 1.0;
+        data[4] = ruido;
+        sum = sum + r;
+        pot = pot + sqrt(pow(r,2)+pow(i,2));
         int disc = disco(v,u);
         //printf("Soy el disco: %d\n", disc);
          write(pipesIn[disc][ESCRITURA],&data,sizeof(data));
 	}
+  printf("La potencia es:%lf\n",pot);
+  printf("La suma es: %lf\n",sum/6.0);
+    
+  end(data);
+  for(int j=0;j<discos+1;j++){
+     write(pipesIn[j][1],&data,sizeof(data));
+  }
 
+  for(int j=0;j<discos+1;j++){
+    close(pipesIn[j][1]);
+  }
     
-    end(data);
-    for(int j=0;j<discos+1;j++){
-       write(pipesIn[j][1],&data,sizeof(data));
-    }
-    for(int j=0;j<discos+1;j++){
-        close(pipesIn[j][1]);
-    }
-    int status;
-    
-    // for(int j = 0; j<discos+1; j++){
-    //     //printf("%d\n",j);
-    //     close(pipesIn[j][ESCRITURA]);
-    // }
-    //se espera el término de los hijos
-    
-    int o;
 
+  prop = (double**)malloc(sizeof(double*)*(discos+1));
+  for(int j=0; j<discos+1;j++){
+    prop[j] = (double*)malloc(sizeof(double)*5);
+  }
+
+  // for(int j = 0; j<discos+1;j++){
+  //   for(int k = 0; k<5; k++ ){
+  //     read(pipesOut[j][LECTURA],&prop[j][k],sizeof(prop[j]));
+  //   }
     
-    for(int j = 0; j<discos+1;j++){
-        read(pipesOut[j][0],&o,sizeof(o));
-        printf("Mi hijo me mandó: %d\n",o);
-        close(pipesOut[j][LECTURA]);
-    }
-	fclose(archivo);
+  // }
+  for(int j = 0; j<discos+1; j++){
+    read(pipesOut[j][0],prop[j], sizeof(double)*5);
+  }
+  printf("Se ha leído con éxito\n");
+	for(int j = 0; j<discos+1; j++){
+    printf("Mis datos son: MediaReal->%lf, MediaImaginaria->%lf, Potencia->%lf, RuidoTotal->%lf\n",prop[j][0],prop[j][1],prop[j][2],prop[j][3]);
+    //printf("Soy: %lf\n",prop[j][2]);
+  }
+  fclose(archivo);
 }
 
 

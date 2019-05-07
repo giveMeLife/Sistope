@@ -6,7 +6,7 @@
 #include <sys/wait.h>
 #include <math.h>
 #include <ctype.h>
-int **pipesI;
+int **pipesI
 int **pipesO;
 
 int main(){

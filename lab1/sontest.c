@@ -15,11 +15,11 @@
 
 
 typedef struct Nodo{
-	float v;
-	float u;
-	float w;
-	float i;
-	float r;
+	double v;
+	double u;
+	double r;
+	double i;
+	double ruido;
 	struct Nodo*sig;
 
 }Nodo;
@@ -37,14 +37,14 @@ void inicializar(Lista * lista){
 }
 
 
-Lista*agregarNodo(Lista*lista, float v, float u, float w, float i, float r){
+Lista*agregarNodo(Lista*lista, double u, double v, double r, double i, double ruido){
 	Nodo*nodo;
 	nodo=(Nodo*)malloc(sizeof(Nodo));
 	nodo->v=v;
 	nodo->u=u;
-	nodo->w=w;
-	nodo->i=i;
 	nodo->r=r;
+	nodo->i=i;
+	nodo->ruido=ruido;
 
 	nodo->sig=NULL;
 	if(lista==NULL){
@@ -69,19 +69,22 @@ int largo(Lista* lista){
 }
 
 //N corresponde a las visibilidades del disco
-float propiedades(Lista* lista, int tipo, int N){
-	float pot = 0;
-	float sumW = 0;
-	float sumI = 0;
-	float sumR = 0;
-
+double propiedades(Lista* lista, int tipo, int N){
+	if(N==0 && (tipo == 0 || tipo == 1)){
+		return (double)0.0;
+	}
+	double pot = 0.0;
+	double sumR = 0.0;
+	double sumI = 0.0;
+	double sumRuido = 0.0;
+	
 	Nodo * actual = lista->inicio;
 
 	while(actual!=NULL){
-		sumW = sumW + actual->w;
-		sumI = sumI + actual->i;		
 		sumR = sumR + actual->r;
-		pot = pot + sqrt(pow(actual->r,2) + pow(actual->u,2));
+		sumI = sumI + actual->i;		
+		sumRuido = sumRuido + actual->ruido;
+		pot = pot + sqrt(pow(actual->r,2) + pow(actual->i,2));
 		actual = actual->sig;
 
 
@@ -89,22 +92,22 @@ float propiedades(Lista* lista, int tipo, int N){
 	
 
 	//Media Real
-	if(tipo == 0)
-		return sumR/N;
+	if(tipo == 0){
+		return sumR/(double)N;}
 	//Media imaginaria
-	else if(tipo == 1)
-		return sumI/N;
+	else if(tipo == 1){
+		return sumI/(double)N;}
 	//Potencia
-	else if(tipo == 2)
-		return pot;
-	else
-		return sumW;
-
+	else if(tipo == 2){
+		return pot;}
+	else{
+		return sumRuido;
+	}
 }
 
 //Verifica si el padre dejará de mandar datos o no.
-int verify(float* a){
-    for(int i = 0; i<6; i++){
+int verify(double* a){
+    for(int i = 0; i<5; i++){
         if(a[i] != -1.0){
             return 0;
         }
@@ -113,24 +116,27 @@ int verify(float* a){
 }
 
 int main(){
-     Lista * lista = malloc(sizeof(Lista));
-     inicializar(lista);
-     float a[6];
-     float actual = -1.0;
-     float n;
-     
-    char b[100];
-
-
-     while(read(STDIN_FILENO,a,sizeof(a))>-1 && verify(a)!=1){ 
-               lista = agregarNodo(lista, a[0],a[1],a[2],a[3],a[4]);         
-     }
-     int l = largo(lista);
-	__pid_t i = getpid();
-	write(STDOUT_FILENO,&l,sizeof(l));
+    Lista * lista = malloc(sizeof(Lista));
+    inicializar(lista);
+    double a[5];
+    double *prop = malloc(sizeof(double)*5);
+	prop[4] = 0.0;
+    while(read(STDIN_FILENO,a,sizeof(a))>-1 && verify(a)!=1){ 
+        lista = agregarNodo(lista, a[0],a[1],a[2],a[3],a[4]);         
+		prop[4] = prop[4] + 1.0;
+	}
+    int l = largo(lista);
+	prop[0] = propiedades(lista,0,l);
+	prop[1] = propiedades(lista,1,l);
+	prop[2] = propiedades(lista,2,l);
+	prop[3] = propiedades(lista,3,l); 
+	// for(int i = 0; i<5; i++){
+	// 	write(STDOUT_FILENO,&prop[i],sizeof(double));
+	// }
+	write(STDOUT_FILENO, prop, sizeof(double)*5);
 	
-	//  close(STDIN_FILENO);
-	//  close(STDOUT_FILENO);
-	
+	freopen ("/dev/tty", "a", stdout);
+	if(l>0)
+		printf("Data:%lf\n",prop[2]);
     return 0;
 }
