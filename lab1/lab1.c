@@ -35,7 +35,7 @@ void writeFile(char * nombreArchivo,double ** propiedades, int discos, int b){
 		fprintf(archivoSalida, "Potencia: %f\n",propiedades[i][2]);
 		fprintf(archivoSalida, "Ruido total: %f\n",propiedades[i][3]);
 		if(b == 1){
-			printf("Soy el hijo de Pid %i y procesé %f\n",childPids[i],propiedades[i][4] );
+			printf("Soy el hijo de Pid %i y procesé %i visibilidades\n",childPids[i],(int)propiedades[i][4] );
 		}
 		i++;
 	}	
