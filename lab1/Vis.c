@@ -143,9 +143,5 @@ int main(){
 	//Envío de mensaje con datos al padre
 	write(STDOUT_FILENO, prop, sizeof(double)*5);
 	
-	freopen ("/dev/tty", "a", stdout);
-	//if(a[5] == 1.0) printf("Soy el hijo de pid %i y procesé %f visibilidades \n",getpid(), prop[4] );
-	// if(l>0)
-	// 	printf("Data:%lf\n",prop[2]);
-    // return 0;
+
 }

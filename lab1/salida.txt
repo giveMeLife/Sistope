@@ -1,50 +1,20 @@
+Disco 0:
+Media real: 0.025931
+Media imaginaria: 0.001565
+Potencia: 0.025978
+Ruido total: 0.004362
 Disco 1:
-Media real: 0.000000
-Media imaginaria: 0.000000
-Potencia: 0.000000
-Ruido total: 0.000000
+Media real: 0.015754
+Media imaginaria: -0.002599
+Potencia: 0.032096
+Ruido total: 0.012985
 Disco 2:
-Media real: 0.000000
-Media imaginaria: 0.000000
-Potencia: 0.000000
-Ruido total: 0.000000
+Media real: -0.012029
+Media imaginaria: 0.001688
+Potencia: 0.037089
+Ruido total: 0.011746
 Disco 3:
 Media real: 0.000000
 Media imaginaria: 0.000000
 Potencia: 0.000000
 Ruido total: 0.000000
-Disco 4:
-Media real: 0.000000
-Media imaginaria: 0.000000
-Potencia: 0.000000
-Ruido total: 0.000000
-Disco 5:
-Media real: 0.000000
-Media imaginaria: 0.000000
-Potencia: 0.000000
-Ruido total: 0.000000
-Disco 6:
-Media real: 0.000000
-Media imaginaria: 0.000000
-Potencia: 0.000000
-Ruido total: 0.000000
-Disco 7:
-Media real: 0.000000
-Media imaginaria: 0.000000
-Potencia: 0.000000
-Ruido total: 0.000000
-Disco 8:
-Media real: 0.000000
-Media imaginaria: 0.000000
-Potencia: 0.000000
-Ruido total: 0.000000
-Disco 9:
-Media real: 0.000000
-Media imaginaria: 0.000000
-Potencia: 0.000000
-Ruido total: 0.000000
-Disco 10:
-Media real: 0.003559
-Media imaginaria: 0.000238
-Potencia: 0.095164
-Ruido total: 0.029093

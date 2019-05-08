@@ -25,17 +25,17 @@ double **prop;
 
 //Se escribe el archivo de salida según el nombre ingresado por el usuario, la lista con las propiedades
 // y el archivo de salida.
-void writeFile(char * nombreArchivo,double ** propiedades, int discos, int b){
+void writeFile(char * nombreArchivo, int b){
 	FILE *archivoSalida=fopen(nombreArchivo,"w");
-	int i = 1;
+	int i = 0;
 	while(i <= discos){
-		fprintf(archivoSalida, "Disco %i:\n",i);
-		fprintf(archivoSalida, "Media real: %f\n",propiedades[i][0]);
-		fprintf(archivoSalida, "Media imaginaria: %f\n",propiedades[i][1]);
-		fprintf(archivoSalida, "Potencia: %f\n",propiedades[i][2]);
-		fprintf(archivoSalida, "Ruido total: %f\n",propiedades[i][3]);
+		fprintf(archivoSalida, "Disco %d:\n",i);
+		fprintf(archivoSalida, "Media real: %f\n",prop[i][0]);
+		fprintf(archivoSalida, "Media imaginaria: %f\n",prop[i][1]);
+		fprintf(archivoSalida, "Potencia: %f\n",prop[i][2]);
+		fprintf(archivoSalida, "Ruido total: %f\n",prop[i][3]);
 		if(b == 1){
-			printf("Soy el hijo de Pid %i y procesé %i visibilidades\n",childPids[i],(int)propiedades[i][4] );
+			printf("Soy el hijo de Pid %i y procesé %d visibilidades\n",childPids[i],(int)prop[i][4] );
 		}
 		i++;
 	}	
@@ -161,7 +161,7 @@ void readFile(char* name, char * nombreSalida, int b){
 	// }
 
 	fclose(archivo);
-	writeFile(nombreSalida,prop,discos,b);
+	writeFile(nombreSalida,b);
 }
 
 
