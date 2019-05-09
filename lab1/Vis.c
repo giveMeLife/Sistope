@@ -13,7 +13,7 @@
 #define ESCRITURA 1
 
 
-
+//Estructura nodo que incluye todos los datos de una visibilidad 
 typedef struct Nodo{
 	double v;
 	double u;
@@ -24,6 +24,7 @@ typedef struct Nodo{
 
 }Nodo;
 
+//Estructura que contiene el primer y último elemento de una lista enlazada
 typedef struct Lista{
 	Nodo * inicio;
 	Nodo * fin;
@@ -31,12 +32,22 @@ typedef struct Lista{
 	
 }Lista;
 
+/*
+Descripción: Función que inicializa una lista
+Entrada: Puntero a estructura lista
+Salida: 
+*/
 void inicializar(Lista * lista){
 	lista->inicio = NULL;
 	lista->fin = NULL;
 }
 
 
+/*
+Descripción: Función que se encarga de agregar un nodo a una lista enlazada
+Entrada: Puntero a lista y valores que corresponden a los datos de una visibilidad
+Salida: Lista con el nodo agregado
+*/
 Lista*agregarNodo(Lista*lista, double u, double v, double r, double i, double ruido){
 	Nodo*nodo;
 	nodo=(Nodo*)malloc(sizeof(Nodo));
@@ -68,7 +79,12 @@ int largo(Lista* lista){
     return i;
 }
 
-//N corresponde a las visibilidades del disco
+/*
+Descripción: Función que calcula las propiedades de una visibilidad
+Entrada: Lista con visibilidades, entero que indica tipo de cálculo a realizar y entero que indica la cantidad de visibilidades que hay
+		 en la lista
+Salida: Un double que es el resultado del calculo
+*/
 double propiedades(Lista* lista, int tipo, int N){
 	if(N==0 && (tipo == 0 || tipo == 1)){
 		return (double)0.0;
@@ -84,7 +100,7 @@ double propiedades(Lista* lista, int tipo, int N){
 		sumR = sumR + actual->r;
 		sumI = sumI + actual->i;		
 		sumRuido = sumRuido + actual->ruido;
-		pot = pot + sqrt(pow(actual->r,2) + pow(actual->i,2));
+		pot = pot + pow(actual->r,2) + pow(actual->i,2);
 		actual = actual->sig;
 
 
@@ -99,13 +115,15 @@ double propiedades(Lista* lista, int tipo, int N){
 		return sumI/(double)N;}
 	//Potencia
 	else if(tipo == 2){
-		return pot;}
+		return sqrt(pot);}
 	else{
 		return sumRuido;
 	}
 }
 
 //Verifica si el padre dejará de mandar datos o no.
+//Entrada: Arreglo de datos double de tamaño 5
+//Salida: 1 si todos los datos son -1.0, o 0 si no lo son.
 int verify(double* a){
     for(int i = 0; i<5; i++){
         if(a[i] != -1.0){
