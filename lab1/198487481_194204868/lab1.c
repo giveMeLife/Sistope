@@ -197,13 +197,6 @@ void readFile(char* name, char * nombreSalida, int b){
 	writeFile(nombreSalida,b);
 }
 
-void verify(int i, int o, int n, int d, int b, int argc){
-  if( (i == 0 || o == 0 || n == 0 || d == 0) || ((b == 1 && argc<10) || (b == 0 && argc < 9)) ){
-    printf("Faltan argumentos en línea de comandos\n");
-    exit(1);
-  }
-
-}
 
 int main(int argc, char *argv[]) {
 
@@ -219,7 +212,7 @@ int main(int argc, char *argv[]) {
 
   opterr = 0;
 
-  while ((c = getopt (argc, argv, "i:o:n:d:b")) != -1){
+  while ((c = getopt (argc, argv, "i:o:n:d:b")) != -1)
     switch (c)
       {
       case 'i':
@@ -250,9 +243,6 @@ int main(int argc, char *argv[]) {
       default:
         abort ();
       }
-  }
-
-    verify(iflag,oflag,nflag,dflag,bvalue, argc);
    
     //Se asignan los valores de entrada a las variables
     strcpy(nombreEntrada,argv[2]);
