@@ -67,6 +67,11 @@ void inicializadPipes(){
     }
 }
 
+/*
+Descripción: Función que se encarga de liberar la memoria de los pipes
+Entrada:
+Salida:
+*/
 void limpiarPipes(){
   for(int i = 0; i<discos; i++){
     free(pipesIn[i]);
@@ -197,6 +202,7 @@ void readFile(char* name, char * nombreSalida, int b){
 	writeFile(nombreSalida,b);
 }
 
+/*Descripción: Función que se encarga de verificar que se encuentran los argumentos necesarios en línea de comandos*/
 void verify(int i, int o, int n, int d, int b, int argc){
   if( (i == 0 || o == 0 || n == 0 || d == 0) || ((b == 1 && argc<10) || (b == 0 && argc < 9)) ){
     printf("Faltan argumentos en línea de comandos\n");
