@@ -1,0 +1,18 @@
+Disco 1:
+Media real: 0.025931
+Media imaginaria: 0.001565
+Potencia: 0.025978
+Ruido total: 0.004362
+
+Disco 2:
+Media real: 0.015754
+Media imaginaria: -0.002599
+Potencia: 0.032096
+Ruido total: 0.012985
+
+Disco 3:
+Media real: -0.012029
+Media imaginaria: 0.001688
+Potencia: 0.037089
+Ruido total: 0.011746
+

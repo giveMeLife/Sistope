@@ -1,8 +1,36 @@
-#include "lab2.h"
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <math.h>
+#include <ctype.h>
 
 
 
+#define LECTURA 0
+#define ESCRITURA 1
 
+
+//Estructura nodo que incluye todos los datos de una visibilidad 
+typedef struct Nodo{
+	double v;
+	double u;
+	double r;
+	double i;
+	double ruido;
+	struct Nodo*sig;
+
+}Nodo;
+
+//Estructura que contiene el primer y último elemento de una lista enlazada
+typedef struct Lista{
+	Nodo * inicio;
+	Nodo * fin;
+
+	
+}Lista;
 
 /*
 Descripción: Función que inicializa una lista
