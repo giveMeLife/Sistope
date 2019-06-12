@@ -46,7 +46,8 @@ typedef struct Monitor{
 	int agregados;
 	pthread_cond_t noLleno;
 	pthread_cond_t lleno;
-	Lista * buffer;
+	pthread_mutex_t mutex;
+	Datos* buffer;
 }Monitor;
 
 typedef struct Parametros{

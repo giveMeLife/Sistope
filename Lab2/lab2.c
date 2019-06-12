@@ -9,16 +9,7 @@ int**pipesIn;
 int**pipesOut;
 pid_t *childPids;
 double **prop;
-
-/*
-Descripción: Función que inicializa una lista
-Entrada: Puntero a estructura lista
-Salida: 
-*/
-void inicializar(Lista * lista){
-	lista->inicio = NULL;
-	lista->fin = NULL;
-}
+int helper;
 
 
 /*
@@ -101,8 +92,26 @@ int disco(double a, double b){
 }
 
 
+//Productor con consumidor tipo C
+void agregar(Monitor *m ,double* data){
+	printf("agregar: %lf\n", data[0]);
+	printf("Cantidad: %d\n", m->agregados);
+	pthread_mutex_lock(&m->mutex);
+	while(m->agregados == m->tamanoBuffer){
+		printf("me llené\n");
+		pthread_cond_signal(&m->lleno);
+		pthread_cond_wait(&m->noLleno,&m->mutex);
+	}
+		m->buffer[m->agregados].v = data[1] +0.0;
+		m->buffer[m->agregados].u = data[0] +0.0;
+		m->buffer[m->agregados].r = data[2] +0.0;
+		m->buffer[m->agregados].i = data[3] +0.0;
+		m->buffer[m->agregados].ruido = data[4]+ 0.0;
+		m->agregados++;
 
+	pthread_mutex_unlock(&m->mutex);;
 
+}
 //función que lee el archivo de texto y se encarga de 
 //mandar los datos a los hijos y recibir las respuestas
 //de estos.
@@ -119,12 +128,12 @@ void readFile(char* name, char * nombreSalida, int b, int tamBuffer){
 	double r;
 	double i;
 	double ruido;
-    double data[5];
+  double data[5];
 	
   //Se abre archivo de texto
 
 	FILE * archivo;
-	archivo=fopen("entrada.csv","r");
+	archivo=fopen("input2.csv","r");
 	/*
 	archivo=fopen(name,"r");
 	if(archivo == NULL){
@@ -132,42 +141,43 @@ void readFile(char* name, char * nombreSalida, int b, int tamBuffer){
 		exit(1);
 	}
 	*/
-	int j = 0;
+		int j = 0;
     void * a = 0;
     printf("DISCOS:%d\n",discos );
     pthread_t hebras[discos];
     Monitor * monitores = (Monitor *)malloc(discos* sizeof(Monitor));
     //Se inicializan los monitores
     //Se crean las hebras en base al número de discos
-
     for (int i = 0; i < discos; ++i)
     {
     	pthread_cond_init(&monitores[i].noLleno,NULL);
-		pthread_cond_init(&monitores[i].lleno,NULL);
+			pthread_cond_init(&monitores[i].lleno,NULL);
+			pthread_mutex_init(&monitores[i].mutex,NULL);
     	monitores[i].tamanoBuffer = tamBuffer;
-		monitores[i].agregados = 0;
-		monitores[i].buffer = (Lista*)malloc(sizeof(Datos)*tamBuffer);
-		inicializar(monitores[i].buffer);
-		
+			monitores[i].agregados = 0;
+			monitores[i].buffer = (Datos*)malloc(sizeof(Datos)*tamBuffer);
+			pthread_create(&hebras[i],NULL,prueba, &monitores[i]);
     }
-	struct Parametros * p = malloc (sizeof (struct Parametros)*discos);
+		struct Parametros * p = malloc (sizeof (struct Parametros)*discos);
 
-     while (fgets(cadena,500,archivo)!=NULL){ 
-		sscanf(cadena,"%lf,%lf,%lf,%lf,%lf",&u,&v,&r,&i,&ruido);
-        data[0] = u;
-        data[1] = v;
-        data[2] = r;
-        data[3] = i;
-        data[4] = ruido;
-        printf("ddd%lf\n",data[0] );
-        int disc = disco(v,u);
-		p[disc].monitores = &monitores[disc];
-		p[disc].data = malloc(sizeof(double)*5);
-		memcpy(p[disc].data,data,sizeof(data));
-		printf("eee%lf\n",data[0] );
-        pthread_create(&hebras[disc],NULL,prueba, (void *) &p[disc]);
-        
-	}
+    while (fgets(cadena,500,archivo)!=NULL){ 
+			sscanf(cadena,"%lf,%lf,%lf,%lf,%lf",&u,&v,&r,&i,&ruido);
+      data[0] = u;
+      data[1] = v;
+      data[2] = r;
+      data[3] = i;
+      data[4] = ruido;
+      int disc = disco(v,u);
+			p[disc].monitores = &monitores[disc];
+			agregar(&monitores[disc],data);
+			printf("disco: %d\n", disc);    
+		}
+		helper = 0;
+		for(j = 0; j<discos;j++){	
+			pthread_mutex_unlock(&monitores[j].mutex);
+			pthread_cond_signal(&monitores[j].lleno);
+			pthread_cond_signal(&monitores[j].noLleno);
+		}
     	
 
     j = 0;
@@ -212,28 +222,48 @@ void readFile(char* name, char * nombreSalida, int b, int tamBuffer){
 	*/
 }
 
-void * prueba(void * parametros){
-	struct Parametros * p;
-	p = (struct Parametros *) parametros;
-	if(p->monitores->tamanoBuffer == p->monitores->agregados){
-		pthread_cond_signal(&p->monitores->noLleno);
-		pthread_cond_wait(&p->monitores->lleno,NULL);
-
+void vaciar(Monitor *m){
+	printf("M agregados: %d\n",m->agregados);
+	for(int i = 0; i<m->agregados;i++){
+		printf("Dato que se vacía: %lf\n", m->buffer[i].u);
+		Datos datos;
 	}
-	else{
-//agregar
-		p->monitores->agregados++;
-		if(p->monitores->agregados == p->monitores->tamanoBuffer){
-			pthread_cond_signal(&p->monitores->lleno);
-			pthread_cond_wait(&p->monitores->noLleno,NULL);
+	m->agregados = 0;
+}
+
+//Consumidor con monitor tipo C
+void * prueba(void * monitor){
+// 	struct Parametros * p;
+// 	p = (struct Parametros *) parametros;
+// 	if(p->monitores->tamanoBuffer == p->monitores->agregados){
+// 		pthread_cond_signal(&p->monitores->noLleno);
+// 		pthread_cond_wait(&p->monitores->lleno,NULL);
+
+// 	}
+// 	else{
+// //agregar
+// 		p->monitores->agregados++;
+// 		if(p->monitores->agregados == p->monitores->tamanoBuffer){
+// 			pthread_cond_signal(&ppthread_cond_signal->monitores->lleno);
+// 			pthread_cond_wait(&p->monitores->noLleno,NULL);
+// 		}
+
+// 	}
+	while(helper == 1){
+		Monitor *p;
+		p = (Monitor *) monitor;
+		pthread_mutex_lock(&p->mutex);
+		while(p->agregados == 0){
+			pthread_cond_wait(&p->lleno,&p->mutex);
+			if(p->agregados == 0)
+				pthread_exit(NULL);
 		}
-
+		vaciar(p);
+		pthread_cond_signal(&p->noLleno);
+		pthread_mutex_unlock(&p->mutex);
 	}
-	
 
-	printf("%d\n",1 );
-	void * a;
-	return a;
+	
 }
 
 
@@ -305,8 +335,7 @@ int main(int argc, char *argv[]) {
     tamBuffer = atoi(argv[10]);
     
     //Se inicializa la lista para almacenar las visibilidades
-    Lista * lista = malloc(sizeof(Lista));
-    inicializar(lista);
+		helper=1;
 
     readFile(nombreEntrada,nombreSalida,bvalue,tamBuffer);
 
