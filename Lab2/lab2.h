@@ -48,7 +48,10 @@ typedef struct Monitor{
 	pthread_cond_t lleno;
 	pthread_mutex_t mutex;
 	Datos* buffer;
+	double * parciales;
 }Monitor;
+
+
 
 typedef struct Parametros{
 	double * data;
