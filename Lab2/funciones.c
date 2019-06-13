@@ -127,7 +127,7 @@ void readFile(char* name, char * nombreSalida, int b, int tamBuffer){
 	int j = 0;
     void * a = 0;
     pthread_t hebras[discos];
-    Monitor * monitores = (Monitor *)malloc(discos* sizeof(Monitor));
+    monitores = (Monitor *)malloc(discos* sizeof(Monitor));
     //Se inicializan los monitores
     //Se crean las hebras en base al número de discos y se le asigna la función procesar
     for (int i = 0; i < discos; ++i)
@@ -169,24 +169,36 @@ void readFile(char* name, char * nombreSalida, int b, int tamBuffer){
     j = 0;
     //Para que las hebras no mueran antes de terminar se utiliza join y se agregan a la estructura común
     while(j < discos){
+			printf("%d\n",j);
     	pthread_join(hebras[j],NULL);
-    	if((monitores[j].parciales[4]) > 0){
-    	prop[j][0] = (monitores[j].parciales[0])/(monitores[j].parciales[4]);
-		prop[j][1] = (monitores[j].parciales[1])/monitores[j].parciales[4];
-		prop[j][2] = (monitores[j].parciales[2]);
-		prop[j][3] = (monitores[j].parciales[3]);
-		prop[j][4] = monitores[j].parciales[4];
-	}
-		else{
-			prop[j][0] = 0.0;
-			prop[j][1] = 0.0;
-			prop[j][2] = 0.0;
-			prop[j][3] = 0.0;
-		}
-    	j++;
-    }
+    // 	if((monitores[j].parciales[4]) > 0){
+    // 	prop[j][0] = (monitores[j].parciales[0])/(monitores[j].parciales[4]);
+		// prop[j][1] = (monitores[j].parciales[1])/monitores[j].parciales[4];
+		// prop[j][2] = (monitores[j].parciales[2]);
+		// prop[j][3] = (monitores[j].parciales[3]);
+		// prop[j][4] = monitores[j].parciales[4];
+		// }
+		// else{
+		// 	prop[j][0] = 0.0;
+		// 	prop[j][1] = 0.0;
+		// 	prop[j][2] = 0.0;
+		// 	prop[j][3] = 0.0;
+		// }
+		j++;
 
-    writeFile(nombreSalida,b);
+  }
+	j=0;
+	while(j<discos){
+			printf("Valor: %d\n",j);
+			int a = j+0;
+			pthread_create(&hebras[a],NULL, calculoProp,(void *) &a);
+			pthread_join(hebras[j], NULL);
+    	j++;
+	}
+	// while(j < discos){
+  //   	pthread_join(hebras[j],NULL);
+  //   	j++;
+  // }
 }
 
 
@@ -263,7 +275,27 @@ void * consumidor(void * monitor){
 		pthread_cond_signal(&p->noLleno);
 		pthread_mutex_unlock(&p->mutex);
 	}
+}
 
-	
+void * calculoProp(void * j){
+	int aux; 
+
+	aux = *((int*)j) ;
+	printf("Aux: %d\n", aux);
+	if(monitores[aux].parciales[4] > 0){
+    prop[aux][0] = (monitores[aux].parciales[0])/(monitores[aux].parciales[4]);
+		prop[aux][1] = (monitores[aux].parciales[1])/monitores[aux].parciales[4];
+		prop[aux][2] = (monitores[aux].parciales[2]);
+		prop[aux][3] = (monitores[aux].parciales[3]);
+		prop[aux][4] = monitores[aux].parciales[4];
+	}
+	else{
+			prop[aux][0] = 0.0;
+			prop[aux][1] = 0.0;
+			prop[aux][2] = 0.0;
+			prop[aux][3] = 0.0;
+	}
+	pthread_exit(NULL);
+
 }
 

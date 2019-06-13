@@ -92,6 +92,7 @@ int main(int argc, char *argv[]) {
 
 	//Se lee el archivo
     readFile(nombreEntrada,nombreSalida,bvalue,tamBuffer);
+		writeFile(nombreSalida,b);
     return 0;
     
 }

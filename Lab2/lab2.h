@@ -17,6 +17,7 @@ int helper;
 double **prop;
 char * nombreSalida;
 int b;
+struct Monitor * monitores;
 
 
 
@@ -54,7 +55,7 @@ typedef struct Monitor{
 
 
 
-
+void * calculoProp(void * j);
 void * consumidor(void * monitor);
 void writeFile(char * nombreArchivo, int b);
 double raiz(double a, double b);
