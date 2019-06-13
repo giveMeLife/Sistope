@@ -31,18 +31,23 @@ int main(int argc, char *argv[]) {
     switch (c)
       {
       case 'i':
+        strcpy(nombreEntrada, optarg);
         iflag = 1;
         break;
       case 'o':
+        strcpy(nombreSalida, optarg);
         oflag = 1;
         break;
       case 'd':
+        ancho = atof(optarg);
         dflag = 1;
         break;
       case 'n':
         nflag = 1;
+        discos = atoi(optarg);
         break;
       case 's':
+      tamBuffer = atoi(optarg);
  	    sflag = 1;
  	    break;
       case 'b':
@@ -64,11 +69,7 @@ int main(int argc, char *argv[]) {
       b = bvalue;
   
  //Se asignan los valores de entrada a las variables
- 
-    strcpy(nombreEntrada,argv[2]);
-    strcpy(nombreSalida,argv[4]);
-    discos = atoi(argv[8]);
-    if(discos == 0){
+    if(discos < 1){
       printf("La cantidad de discos debe ser >= 1\n");
       exit(1);
     }
@@ -78,9 +79,8 @@ int main(int argc, char *argv[]) {
       printf("El ancho debe ser mayor a 0");
       exit(1);
     }
-    tamBuffer = atoi(argv[10]);
     
-	helper=1;
+	  helper=1;
 	
     /*Se asigna memoria al arreglo en donde serán agregados luego las propiedades calculadas por
 	  cada hebra

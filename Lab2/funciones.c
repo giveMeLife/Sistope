@@ -164,7 +164,11 @@ void readFile(char* name, char * nombreSalida, int b, int tamBuffer){
 		}
 
 
-		
+		j=0;
+		while(j<discos){
+			pthread_join(hebras[j],NULL);
+			j++;
+		}
 
     //Para que las hebras no mueran antes de terminar se utiliza join y se agregan a la estructura común
 	j=0;
