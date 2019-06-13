@@ -1,6 +1,6 @@
-all: lab1 Vis
+all: lab2 funciones
 
-lab1: lab1.c 
-	gcc -o lab1 lab1.c -lm
-Vis: Vis.c
-	gcc -o Vis Vis.c -lm
+lab2: lab2.c 
+	gcc -o lab2 lab2.c -lm -pthread
+funciones: funciones.c
+	gcc -o funciones funciones.c -lm -pthread

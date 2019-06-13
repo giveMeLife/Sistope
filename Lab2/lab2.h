@@ -8,26 +8,23 @@
 #include <ctype.h>
 
 
-//Estructura nodo que incluye todos los datos de una visibilidad 
-typedef struct Nodo{
-	double mediaR;
-	double mediaI;
-	double potencia;
-	double ruido;
-	struct Nodo * sig;
+//******************************** VARIABLES GLOBALES ********************************
+char buffer[100];
+int discos;
+float ancho;
+int tamBuffer;
+int helper;
+double **prop;
+char * nombreSalida;
+int b;
 
 
-}Nodo;
 
-//Estructura que contiene el primer y último elemento de una lista enlazada
-typedef struct Lista{
-	Nodo * inicio;
-	Nodo * fin;
-
-	
-}Lista;
-
-
+/*
+La estructura dato se encarga de almacenar la información ingresada en el archivo de entrada,
+los cuales son v y u para el cálculo del radio, la parte real (r), la parte imaginaria (i) y el 
+ruido
+*/
 typedef struct Datos{
 	double v;
 	double u;
@@ -38,7 +35,13 @@ typedef struct Datos{
 }Datos;
 
 
-
+/*
+La estructura monitor cuenta con:
+Dos variables de condición para indicar cuando el buffer de cada hebra se encuentra lleno o noLleno.
+El tamaño de cada buffer y la cantidad de datos, los cuales si son comparados permiten saber cuando se llena el buffer.
+Un mutex para restringir cuando cada hebra puede escribir en el buffer del proceso principal.
+Parciales es un arreglo para almacenar las propiedades parciales de cada hebra
+*/
 typedef struct Monitor{
 	int tamanoBuffer;
 	int agregados;
@@ -51,18 +54,13 @@ typedef struct Monitor{
 
 
 
-typedef struct Parametros{
-	double * data;
-	Monitor * monitores;
 
-}Parametros;
-
-
-void * prueba(void * a);
-
+void * consumidor(void * monitor);
 void writeFile(char * nombreArchivo, int b);
 double raiz(double a, double b);
 int disco(double a, double b);
 void readFile(char* name, char * nombreSalida, int b, int tamanoBuffer);
-void inicializar(Lista * lista);
-Lista*agregarNodo(Lista*lista, double u, double v, double r, double i, double ruido);
+void agregarMonitor(Monitor *m ,double* data);
+void vaciar(Monitor *m);
+
+
