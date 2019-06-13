@@ -166,30 +166,9 @@ void readFile(char* name, char * nombreSalida, int b, int tamBuffer){
 
 		
 
-    j = 0;
     //Para que las hebras no mueran antes de terminar se utiliza join y se agregan a la estructura común
-    while(j < discos){
-			printf("%d\n",j);
-    	pthread_join(hebras[j],NULL);
-    // 	if((monitores[j].parciales[4]) > 0){
-    // 	prop[j][0] = (monitores[j].parciales[0])/(monitores[j].parciales[4]);
-		// prop[j][1] = (monitores[j].parciales[1])/monitores[j].parciales[4];
-		// prop[j][2] = (monitores[j].parciales[2]);
-		// prop[j][3] = (monitores[j].parciales[3]);
-		// prop[j][4] = monitores[j].parciales[4];
-		// }
-		// else{
-		// 	prop[j][0] = 0.0;
-		// 	prop[j][1] = 0.0;
-		// 	prop[j][2] = 0.0;
-		// 	prop[j][3] = 0.0;
-		// }
-		j++;
-
-  }
 	j=0;
 	while(j<discos){
-			printf("Valor: %d\n",j);
 			int a = j+0;
 			pthread_create(&hebras[a],NULL, calculoProp,(void *) &a);
 			pthread_join(hebras[j], NULL);
@@ -281,7 +260,6 @@ void * calculoProp(void * j){
 	int aux; 
 
 	aux = *((int*)j) ;
-	printf("Aux: %d\n", aux);
 	if(monitores[aux].parciales[4] > 0){
     prop[aux][0] = (monitores[aux].parciales[0])/(monitores[aux].parciales[4]);
 		prop[aux][1] = (monitores[aux].parciales[1])/monitores[aux].parciales[4];

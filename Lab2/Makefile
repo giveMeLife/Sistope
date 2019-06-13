@@ -1,6 +1,11 @@
-all: lab2 funciones
+# makefile para Linux,  
 
-lab2: lab2.c 
-	gcc -o lab2 lab2.c -lm -pthread
-funciones: funciones.c
-	gcc -o funciones funciones.c -lm -pthread
+
+Lab2 : lab2.o funciones.o 
+	gcc -o lab2 lab2.o funciones.o 
+
+lab2.o: lab2.c lab2.h 
+	gcc -c lab2.c 
+
+funciones.o: funciones.c lab2.h 
+	gcc -c funciones.c
