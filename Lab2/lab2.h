@@ -8,20 +8,24 @@
 #include <ctype.h>
 
 
-#define LECTURA 0
-#define ESCRITURA 1
-
-
 //Estructura nodo que incluye todos los datos de una visibilidad 
 typedef struct Nodo{
-	double v;
-	double u;
-	double r;
-	double i;
+	double mediaR;
+	double mediaI;
+	double potencia;
 	double ruido;
-	struct Nodo*sig;
+	struct Nodo * sig;
+
 
 }Nodo;
+
+//Estructura que contiene el primer y último elemento de una lista enlazada
+typedef struct Lista{
+	Nodo * inicio;
+	Nodo * fin;
+
+	
+}Lista;
 
 
 typedef struct Datos{
@@ -33,13 +37,7 @@ typedef struct Datos{
 
 }Datos;
 
-//Estructura que contiene el primer y último elemento de una lista enlazada
-typedef struct Lista{
-	Nodo * inicio;
-	Nodo * fin;
 
-	
-}Lista;
 
 typedef struct Monitor{
 	int tamanoBuffer;
@@ -67,6 +65,4 @@ double raiz(double a, double b);
 int disco(double a, double b);
 void readFile(char* name, char * nombreSalida, int b, int tamanoBuffer);
 void inicializar(Lista * lista);
-Lista* agregarNodo(Lista*lista, double u, double v, double r, double i, double ruido);
-double propiedades(Lista* lista, int tipo, int N);
 Lista*agregarNodo(Lista*lista, double u, double v, double r, double i, double ruido);
