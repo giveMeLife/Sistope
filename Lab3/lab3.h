@@ -24,10 +24,13 @@ typedef struct Llamada{
 }Llamada;
 
 
-typedef struct Llamadas{
-	Llamada * inicio;
-	Llamada * fin;
-}Llamadas;
+typedef struct Proxima_Llamada{
+	int direccion;
+	int cantidad_pasajeros;
+	int destino;
+	struct Proxima_Llamada*sig;
+}Proxima_Llamada;
+
 
 /*
 La estructura ascensor contiene la dirección, capacidad, el piso actual, los pasajeros que lleva, el 
@@ -37,27 +40,19 @@ tiempo de subida total y el tiempo de bajada.
 typedef struct Ascensor{
 	int capacidad;
 	int direccion;
-	int piso;
+	int piso_actual;
+	int piso_destino;
 	int pasajeros;
 	int t_subida;
 	int t_bajada;
 	int estado;
-	double FS;
-	struct Ascensor*sig;
+	int descargando;
+	int puertas;
+	Proxima_Llamada*cola;
 }Ascensor;
-
-typedef struct Ascensores{
-	Ascensor * inicio;
-	Ascensor * fin;
-
-	
-}Ascensores;
-
-
 
 
 
 void readFile(char* nombre1, char * nombre2, char * nombre3, int pisos, int ascensores, int bvalue);
-void inicializar(Llamadas * lista);
-Llamadas*agregarLlamada(Llamadas*lista, int tiempo_llamada, int piso_origen, int piso_destino,int direccion,int cantidad);
-void asignarAscensor(Llamadas*lista,Ascensores*ascensor, int c_ascensores,int pisos);
+Llamada*agregarLlamada(Llamada*lista, int tiempo_llamada, int piso_origen, int piso_destino,int direccion,int cantidad);
+void asignarAscensor(Llamada*lista,Ascensor*ascensor, int c_ascensores,int pisos);
