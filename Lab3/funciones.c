@@ -42,25 +42,19 @@ Proxima_Llamada*nuevaLlamada(Proxima_Llamada*lista,int direccion,int cantidad_pa
 	nuevo->cantidad_pasajeros = cantidad_pasajeros;
 	nuevo->destino =destino;
 	nuevo->sig=NULL;
-	printf("1111\n");
 
 	if(lista==NULL){
 		lista=nuevo;
 	}
 
 	else{
-		printf("222222\n");
 		Proxima_Llamada *aux = lista;
-		printf("333333\n");
-		printf("Direccion: %d\n",aux->direccion );
 		while(aux->sig!=NULL){
 			aux = aux->sig;
 		}
-			printf("4444\n");
 
 		aux->sig = nuevo;
 	}
-	printf("555\n");
 	return lista;
 }
 
@@ -92,7 +86,21 @@ void writeFile(char * nombreArchivo, int b){
 	fclose(archivoSalida);
 }
 
+void print(Llamada* l){
+	Llamada* aux = l;
+	int i = 0;
+	while(aux->sig !=NULL){
+		
+		printf("%d\n",i);
+		i = i+1;
+		aux = aux->sig;
+	}
+}
 
+void getAcensor(Ascensor* l, int index){
+	int i = 0;
+
+}
 //***********************************************************************************************
 //***********************************************************************************************
 
@@ -135,22 +143,23 @@ void readFile(char* nombre1, char * nombre2, char * nombre3, int pisos, int asce
             	//agregarAscensor(ascensor*lista,int capacidad,int direccion,int piso,int pasajeros,int t_subida,int t_bajada,double FS)
             	//ascensor = agregarAscensor(ascensor,20,1,1,0,0,0,0);
             	ascensor[i].capacidad = 20;
-				ascensor[i].direccion = direccion;
-				ascensor[i].piso_actual = 1;
-				ascensor[i].piso_destino = 1;
-				ascensor[i].pasajeros = 0;
-				ascensor[i].t_subida = 0;
-				ascensor[i].t_bajada = 0;
-				ascensor[i].descargando = 0;
-				ascensor[i].puertas = 0;
-				ascensor[i].estado = 0;
-				ascensor[i].cola = malloc(100*sizeof(Proxima_Llamada));
+							ascensor[i].direccion = direccion;
+							ascensor[i].piso_actual = 1;
+							ascensor[i].piso_destino = 1;
+							ascensor[i].pasajeros = 0;
+							ascensor[i].t_subida = 0;
+							ascensor[i].t_bajada = 0;
+							ascensor[i].descargando = 0;
+							ascensor[i].puertas = 0;
+							ascensor[i].estado = 0;
+							ascensor[i].cola = NULL;
             }
             
 		}
-
+		printf("hola\n");
+		print(lista);
 		asignarAscensor(lista,ascensor,cantidad,pisos);
-	fclose(archivo);
+		fclose(archivo);
 
 	//Iniciar elevadores con 0 pasajeros y piso 1
 	//comprobar parámetros
@@ -165,7 +174,6 @@ Ascensor* calcularFS(Ascensor*lista,int dir_llamada,int pisos_edificio, int piso
 	int i = 0;
 	int max = 0;
 	int asc = 0;
-	printf("asaasas\n");
 	while(i< c_ascensores){
 		if(lista[i].estado == 1 && ((lista[i].piso_actual <= piso_llamada && lista[i].direccion == 1)||(lista[i].piso_actual >= piso_llamada && lista[i].direccion==0)) && lista[i].direccion == dir_llamada){
 			FS = pisos_edificio + 2 - abs(lista[i].piso_actual - piso_llamada);
@@ -181,12 +189,11 @@ Ascensor* calcularFS(Ascensor*lista,int dir_llamada,int pisos_edificio, int piso
 		}
 		i++;
 		if(FS > max){
+			printf("FS: %d\n", FS);
 			max = FS;
 			asc = i;
 		}
-		printf("asdasdasdasdasd\n");
-		lista[max].cola = nuevaLlamada(lista[max].cola, dir_llamada,c_pasajeros, piso_destino);
-		printf("adasccdf\n");
+		lista[max-1].cola = nuevaLlamada(lista[max-1].cola, dir_llamada,c_pasajeros, piso_destino);
 	}
 	/*
 	lista[max].cola->direccion = dir_llamada;
@@ -239,13 +246,15 @@ void asignarAscensor(Llamada*lista,Ascensor*ascensor, int c_ascensores,int pisos
 	//cl	printf("Tiempo llamada: %d\n",aux->tiempo_llamada );
 		if(tiempo == aux-> tiempo_llamada){
 		//	ascensor = actualizar();
+			printf("hi\n");
 			ascensor = calcularFS(ascensor, aux->direccion, pisos,aux->piso_origen, aux->piso_destino,c_ascensores,aux->cantidad);
 		//	printf("FS: %d\n",FS );
 		//	printf("Tiempo: %d\n",tiempo );
 			printf("Tiempo llamada: %d\n",aux->tiempo_llamada );
-			aux = aux->sig;
+			
 				
 		}
+		aux = aux->sig;
 		
 	tiempo = tiempo + 1;
 	}
