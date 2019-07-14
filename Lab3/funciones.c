@@ -39,8 +39,8 @@ Llamadas*agregarLlamada(Llamadas*lista, int tiempo_llamada, int piso_origen, int
 		lista->fin = llamada;
 	}
 	else{
-		llamada->sig=lista->inicio;
-		lista->inicio=llamada;
+		lista->fin->sig = llamada;
+		lista->fin = llamada;
 	}
 	return lista;
 }
