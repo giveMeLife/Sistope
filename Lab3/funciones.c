@@ -4,7 +4,39 @@
 //***********************************************************************************************
 
 
+int largoL(Proxima_Llamada* l){
+	int i = 0;
+	Proxima_Llamada* aux = l;
+	while(aux->sig != NULL){
+		aux = aux->sig;
+		i++;
+	}
+	return i;
+}
 
+Proxima_Llamada* eliminarLlamada(Proxima_Llamada* l, int index){
+	int i = 1;
+	int largo = largoL(l);
+	Proxima_Llamada* aux = l;
+	if(index == 0){
+		Proxima_Llamada* siguiente = l->sig;
+		free(l);
+		return siguiente;
+	}
+	else if(index >= largo){
+		return NULL;
+	}
+	while(aux->sig!=NULL){
+		if(i == index){
+			Proxima_Llamada* s = aux->sig;
+			aux->sig = s->sig;
+			free(s);
+			return l; 
+		}
+		i++;
+		aux = aux->sig;
+	}
+}
 
 /*
 Descripción: Función que se encarga de agregar un nodo a una lista enlazada
@@ -97,10 +129,6 @@ void print(Llamada* l){
 	}
 }
 
-void getAcensor(Ascensor* l, int index){
-	int i = 0;
-
-}
 //***********************************************************************************************
 //***********************************************************************************************
 
