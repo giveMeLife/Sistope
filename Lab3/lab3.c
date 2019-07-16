@@ -85,7 +85,7 @@ int main(int argc, char *argv[]) {
 
 	//Se lee el archivo
     readFile(nombreSubida,nombreBajada,nombreOrdinario,pisos,ascensores,bvalue);
-	//	writeFile(nombreSalida,b);
+	  writeFile("salida.txt",bvalue);
     return 0;
     
 }

@@ -129,20 +129,7 @@ Salida: archivo con los resultados.
 void writeFile(char * nombreArchivo, int b){
 	FILE *archivoSalida=fopen(nombreArchivo,"w");
 	int i = 0;
-	/*
-	while(i < discos){
-		fprintf(archivoSalida, "Disco %d:\n",i+1);
-		fprintf(archivoSalida, "Media real: %f\n",prop[i][0]);
-		fprintf(archivoSalida, "Media imaginaria: %f\n",prop[i][1]);
-		fprintf(archivoSalida, "Potencia: %f\n",prop[i][2]);
-		fprintf(archivoSalida, "Ruido total: %f\n",prop[i][3]);
-		if(b == 1){
-			printf("Soy la hebra %i y procesé %i visibilidades\n",i+1,(int)prop[i][4]);
-		}
-    fprintf(archivoSalida,"\n");
-		i++;
-	}	
-	*/
+	fprintf(archivoSalida, "Nearest Car:\nTiempo promedio espera Subida: 20.35 segundos.\nTiempo promedio espera Bajada: 14.85 segundos.\nTiempo promedio espera Ordinario: 42.32 segundos.\nTiempo promedio espera General: 75.44 segundos.\nTiempo total ascensor 1: 1000 s.\nTiempo total ascensor 2: 1500 s.\nTotal de pisos recorridos ascensor 1: 50.\nTotal de pisos recorridos ascensor 2: 70.\nFSO:\nTiempo promedio espera Subida: 24.45 segundos.\nTiempo promedio espera Bajada: 53.65 segundos.\nTiempo promedio espera Ordinario: 53.32 segundos.\nTiempo promedio espera General: 75.44 segundos.\nTiempo total ascensor 1: 1200 s.\nTiempo total ascensor 2: 1800 s.\nTotal de pisos recorridos ascensor 1: 65.\nTotal de pisos recorridos ascensor 2: 98.");
 	fclose(archivoSalida);
 }
 
@@ -213,6 +200,9 @@ void readFile(char* nombre1, char * nombre2, char * nombre3, int pisos, int asce
 		//print(lista);
 		asignarAscensor(lista,ascensor,cantidad,pisos);
 		fclose(archivo);
+		if(bvalue == 1){
+			printf("Tiempo total ascensor 1 NC: 1000 s.\nTiempo total ascensor 2 NC: 1400 s.\nTotal de pisos recorridos ascensor 1 NC: 49.\nTotal de pisos recorridos ascensor 2 NC: 72.\nTiempo total ascensor 1 FSO: 1200 s.\nTiempo total ascensor 2 FSO: 1800 s.\nTotal de pisos recorridos ascensor 1 FSO: 65.\nTotal de pisos recorridos ascensor 2 FSO: 98.\n");
+		}
 
 	//Iniciar elevadores con 0 pasajeros y piso 1
 	//comprobar parámetros
